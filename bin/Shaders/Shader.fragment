@@ -1,0 +1,23 @@
+#version 330
+
+in vec2 uv;
+
+layout(location=0) out vec3 color;
+
+uniform sampler2D texture;
+
+void main(void)
+{
+
+	color = texture2D(texture, uv).rgb;
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+// * QUICK NOTES * 
+//
+// Nothing new was added to this fragment shader since the last tutorial.
+//
+// © 2000-2015 GameTutorials
