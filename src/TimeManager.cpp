@@ -1,42 +1,49 @@
 #include "TimeManager.h"	
 
 using namespace std;													
-using namespace chrono;													
+using namespace chrono;	
 
-double TimeManager::CalculateFrameRate(bool writeToConsole = false)
+TimeManager::TimeManager()
 {
-	
-	static double framesPerSecond = 0.0f;								
-	static double startTime = GetTime();								
-	static double lastTime = GetTime();									
-	static char strFrameRate[50] = { 0 };								
-	static double currentFPS = 0.0f;									
 
-	CurrentTime = GetTime();
-	DeltaTime = CurrentTime - lastTime;
-	lastTime = CurrentTime;
-	++framesPerSecond;
+	delta = 0;
+	currentTime = 0;
+
+}												
+
+double TimeManager::getFrameRate(bool writeToConsole)
+{
+
+	static double frameRate = 0.0;
+	static double startTime = getTime();
+	static double lastTime = getTime();
+	static double currentFrameRate = 0.0;
+
+	currentTime = getTime();
+	delta = currentTime - lastTime;
+	lastTime = currentTime;
+	++frameRate;
 	
-	if(CurrentTime - startTime > 1.0f)
+	if(currentTime - startTime > 1.0)
 	{
 
-		startTime = CurrentTime;
+		startTime = currentTime;
 
 		if(writeToConsole)
-			fprintf(stderr, "Current Frames Per Second: %d\n", int(framesPerSecond));
+			cout << "FPS: " << (int) frameRate << endl;
 		
-		currentFPS = framesPerSecond;
-		framesPerSecond = 0;
+		currentFrameRate = frameRate;
+		frameRate = 0;
 
 	}
 	
-	return currentFPS;
+	return currentFrameRate;
 
 }
 
 
 
-double TimeManager::GetTime()
+double TimeManager::getTime()
 {
 
 	auto beginningOfTime = system_clock::now().time_since_epoch();
@@ -46,18 +53,9 @@ double TimeManager::GetTime()
 
 }
 
-
-
-void TimeManager::Sleep(int ms)
+void TimeManager::sleep(int ms)
 {
 
 	this_thread::sleep_for( milliseconds(ms) );
 
 }
-
-
-
-
-
-
-

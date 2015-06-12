@@ -1,17 +1,15 @@
-#ifndef _InputManager_H
-#define _InputManager_H
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
 
-#define GLM_FORCE_RADIANS								
+#include "common.h"
 
-#include <glm/glm.hpp>									
-#include <glm/gtc/matrix_transform.hpp>					
-#include <glm/gtx/transform2.hpp>						
-#include "Camera.h"	
+using namespace glm;	
 
-using namespace glm;									
+class Camera;								
 
-enum InputCodes
+enum InputCode_t
 {
+
 	kEscape = 27,
 	Space = 32,
 	Left = 37,
@@ -43,39 +41,26 @@ enum InputCodes
 	w = 119, W = 87,
 	x = 120, X = 88,
 	y = 121, Y = 89,
-	z = 122, Z = 90,
+	z = 122, Z = 90
+
 };
 
 class InputManager
 {
 public:
 	
-	void KeyPressed(InputCodes code);
+	InputManager(Camera *camera);
+	~InputManager();
 	
-	void SetCamera(Camera *pCamera) { Camera = pCamera; }
-	Camera *GetCamera() { return Camera; }
+	Camera *getCamera() { return camera; }
 
-	
-	void MouseMoved(float mouseX, float mouseY);
+	void keyPressed(InputCode_t code);
+	void mouseMoved(float mouseX, float mouseY);
 
 protected:
 
-	
-	Camera *Camera;
+	Camera *camera;
+
 };
 
-#endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif

@@ -1,103 +1,110 @@
-//***********************************************************************															 
-//	
-//		Julio Trasferetti Nicolucci - 8517251 
-//                                                                       
-//		Trabalho CG - Labirinto									 																	 
-//***********************************************************************
-
 #include "Camera.h"
+
+using namespace std;
+using namespace glm;
 
 Camera::Camera()
 {
 	
-	// Posição default da camera
-	Position = vec3(0.0, 0.0, 0.0);
+	position = vec3(0.0, 0.0, 0.0);
+	speed = 5.0;									
+	rotationSpeed = 2;							
+	mouseSpeed = 0.001;							
+	yaw = 0;										
+	pitch = 0;
 
 }
 
-mat4 Camera::SetPerspective(float fov, float aspectRatio, float nearPlane, float farPlane)
+Camera::~Camera()
 {
 
-	ProjectionMatrix = perspective(fov, aspectRatio, nearPlane, farPlane);
 
-	return ProjectionMatrix;
+
+}
+
+mat4 Camera::setPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
+{
+
+	projectionMatrix = perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
+
+	return projectionMatrix;
 	
 }
 
-void Camera::PositionCamera(float positionX, float positionY, float positionZ, float yaw, float pitch)
+void Camera::positionCamera(float x, float y, float z, float yaw, float pitch)
 {
 
-	Position = vec3(positionX, positionY, positionZ);
+	position = vec3(x, y, z);
 
-	Yaw = yaw;
-	Pitch = pitch;
+	this->yaw = yaw;
+	this->pitch = pitch;
 
 }
 
-mat4 Camera::GetRotationMatrix()
+mat4 Camera::getRotationMatrix()
 {
 
-	mat4 rotationMatrix(1.0f);
+	mat4 rotationMatrix(1.0);
 
-	rotationMatrix = rotate(rotationMatrix, Pitch, vec3(1, 0, 0));
-	rotationMatrix = rotate(rotationMatrix, Yaw, vec3(0, 1, 0));
+	rotationMatrix = rotate(rotationMatrix, pitch, vec3(1, 0, 0));
+	rotationMatrix = rotate(rotationMatrix, yaw, vec3(0, 1, 0));
 
 	return rotationMatrix;
 
 }
 
-mat4 Camera::GetViewMatrix()
+mat4 Camera::getViewMatrix()
 {
 
-	return GetRotationMatrix() * inverse(translate(mat4(), Position));
+	return getRotationMatrix() * inverse(translate(mat4(), position));
 
 }
 
-vec3 Camera::GetView()
+vec3 Camera::getView()
 {
 
-	vec4 viewVector = inverse(GetRotationMatrix()) * vec4(0, 0, -1, 1);
+	vec4 viewVector = inverse(getRotationMatrix()) * vec4(0, 0, -1, 1);
 
 	return vec3(viewVector);
 
 }
 
-vec3 Camera::GetUp()
+vec3 Camera::getUp()
 {
 
-	vec4 upVector = inverse(GetRotationMatrix()) * vec4(0, 1, 0, 1);
+	vec4 upVector = inverse(getRotationMatrix()) * vec4(0, 1, 0, 1);
 
 	return vec3(upVector);
 
 }
 
-void Camera::MoveCamera(float speed)
+void Camera::move(float speed)
 {
 
-	vec3 viewVector = GetView();
+	vec3 viewVector = getView();
 
-	Position.x += viewVector.x * speed;		
-	Position.z += viewVector.z * speed;
+	position.x += viewVector.x * speed;		
+	position.z += viewVector.z * speed;
 
 }
 
-void Camera::SetViewByMouse(float xOffset, float yOffset)
+void Camera::setViewByMouse(float xOffset, float yOffset)
 {
 
-	Yaw += xOffset * MouseSpeed;
-	Pitch += yOffset * MouseSpeed;
+	yaw += xOffset * mouseSpeed;
+	pitch += yOffset * mouseSpeed;
 
-	if(Yaw > 2 * PI)
-		Yaw = 0;
+	if(yaw > 2 * PI)
+		yaw = 0;
 
 	// Cap the yaw between 0 and 360
-	if(Yaw < 0)
-		Yaw = 2 * PI;
+	if(yaw < 0)
+		yaw = 2 * PI;
 
-	if(Pitch > radians(75.0f))
-		Pitch = radians(75.0f);
+	if(pitch > radians(75.0))
+		pitch = radians(75.0);
 
-	if(Pitch < radians(-75.0f))
-		Pitch = radians(-75.0f);
+	if(pitch < radians(-75.0))
+		pitch = radians(-75.0);
 
 }

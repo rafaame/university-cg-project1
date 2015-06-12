@@ -1,52 +1,39 @@
-#ifndef _TimeManager_H
-#define _TimeManager_H
+#ifndef TIMEMANAGER_H
+#define TIMEMANAGER_H
 
-#include <chrono>													
-#include <thread>													
+#include "common.h"
 
+using namespace std;
 
 class TimeManager
 {
-public:
 
+public:
 	
-	static TimeManager& Instance()
+	static TimeManager* instance()
 	{
+
 		static TimeManager instance;
 		
-		return instance;
+		return &instance;
+
 	}
 
+	double getDelta() { return delta; }
+	double getTime();
+	double getFrameRate(bool writeToConsole = false);
 	
-	double CalculateFrameRate(bool writeToConsole);
-
-	
-	double GetTime();
-
-	
-	void Sleep(int milliseconds);
-
-	
-	double DeltaTime = 0;
-
-	
-	double CurrentTime = 0;
+	void sleep(int milliseconds);
 
 private:
-	TimeManager(){};								
-	TimeManager(TimeManager const&);				
-	TimeManager& operator=(TimeManager const&);		
+
+	TimeManager();
+	TimeManager(TimeManager const&);
+	TimeManager& operator= (TimeManager const&);
+
+	double delta;
+	double currentTime;
+
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-

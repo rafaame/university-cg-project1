@@ -1,109 +1,162 @@
 #include "Shader.h"	
 
-std::string Shader::LoadShaderFile(std::string strFile)
+using namespace std;
+
+Shader::Shader()
 {
+
+
+
+}
+
+Shader::~Shader()
+{
+
+	release();
+
+}
+
+string Shader::readFromFile(string filename)
+{
+
+	cout << "Loading shader file (" << filename << ")... ";
 	
-	std::ifstream fin(strFile.c_str());
+	ifstream fin(filename.c_str());
 	
 	if(!fin)
 		return "";
 
-	std::string strLine = "";
-	std::string strText = "";
+	string line = "";
+	string code = "";
 	
-	while(getline(fin, strLine))
-		strText = strText + "\n" + strLine;
+	while(getline(fin, line))
+		code = code + "\n" + line;
 	
 	fin.close();
+
+	cout << "loaded" << endl;
 	
-	return strText;
+	return code;
+
 }
 
-void Shader::Initialize(std::string strVertexFile, std::string strFragmentFile)
+GLuint Shader::createShader(GLenum type, string code)
 {
-	
-	std::string strVShader, strFShader;
-	
-	if(!strVertexFile.length() || !strFragmentFile.length())
-		return;
 
-	if(VertexShaderId || FragmentShaderId || ShaderProgramId)
-		Destroy();
-	
-	GLenum ErrorCheckValue = glGetError();
-	
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint shaderId = glCreateShader(type);
+	const char *tmpCode = code.c_str();
 
-	strVShader = LoadShaderFile(strVertexFile.c_str());
-	strFShader = LoadShaderFile(strFragmentFile.c_str());
+	glShaderSource(shaderId, 1, &tmpCode, nullptr);
 	
-	const char *szVShader = strVShader.c_str();
-	const char *szFShader = strFShader.c_str();
+	cout << "Compiling " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment")  << " shader... ";
+	glCompileShader(shaderId);
 
-	glShaderSource(VertexShaderId, 1, &szVShader, nullptr);
-	glShaderSource(FragmentShaderId, 1, &szFShader, nullptr);
+	GLint success, maxLength;
+	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+
+	if(success != GL_NO_ERROR)
+	{
+
+		cout << "error" << endl;
+
+		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
+	 
+		vector<GLchar> errorLog(maxLength);
+		glGetShaderInfoLog(shaderId, maxLength, &maxLength, &errorLog[0]);
+
+		for(auto it = errorLog.begin(); it != errorLog.end(); it++)
+			cout << (*it);
+
+		cout << endl;
+
+	}
+	else
+		cout << "compiled" << endl;
+
+	return shaderId;
+
+}
+
+bool Shader::init(string vertexShaderFilename, string fragmentShaderFilename)
+{
+		
+	if(!vertexShaderFilename.length() || !fragmentShaderFilename.length())
+		return false;
+
+	if(vertexShaderId || fragmentShaderId || programId)
+		release();
 	
-	glCompileShader(VertexShaderId);
-	glCompileShader(FragmentShaderId);
-
-	ShaderProgramId = glCreateProgram();
-
-	glAttachShader(ShaderProgramId, VertexShaderId);
-	glAttachShader(ShaderProgramId, FragmentShaderId);
-
-	glLinkProgram(ShaderProgramId);
+	string vertexShaderCode = readFromFile(vertexShaderFilename);
+	string fragmentShaderCode = readFromFile(fragmentShaderFilename);
 	
-	ErrorCheckValue = glGetError();
+	vertexShaderId = createShader(GL_VERTEX_SHADER, vertexShaderCode);
+	fragmentShaderId = createShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
 	
-	if(ErrorCheckValue != GL_NO_ERROR)
+	programId = glCreateProgram();
+	glAttachShader(programId, vertexShaderId);
+	glAttachShader(programId, fragmentShaderId);
+	glLinkProgram(programId);
+	
+	GLenum error = glGetError();
+	
+	if(error != GL_NO_ERROR)
 	{
 		
-		fprintf(stderr, "ERROR: Could not create the shader program with error Id: %d\n", ErrorCheckValue);
-		exit(-1);
+		cout << "Could not create the shader program (errorId: " << error << ")" << endl;
+		
+		return false;
 
 	}
 
+	return true;
+
 }
 
-GLint Shader::GetVariable(std::string strVariable)
+GLint Shader::getUniformLocation(string name)
 {
 
-	if(!ShaderProgramId)
+	if(!programId)
 		return -1;
 	
-	return glGetUniformLocation(ShaderProgramId, strVariable.c_str());
+	return glGetUniformLocation(programId, name.c_str());
 
 }
 
-void Shader::Destroy()
+void Shader::setActive(bool active)
+{
+
+	glUseProgram(active ? programId : 0);
+
+}
+
+void Shader::release()
 {
 	
-	if(VertexShaderId)
+	if(vertexShaderId)
 	{
 
-		glDetachShader(ShaderProgramId, VertexShaderId);
-		glDeleteShader(VertexShaderId);
-		VertexShaderId = 0;
+		glDetachShader(programId, vertexShaderId);
+		glDeleteShader(vertexShaderId);
+		vertexShaderId = 0;
 
 	}
 
 	
-	if(FragmentShaderId)
+	if(fragmentShaderId)
 	{
 
-		glDetachShader(ShaderProgramId, FragmentShaderId);
-		glDeleteShader(FragmentShaderId);
-		FragmentShaderId = 0;
+		glDetachShader(programId, fragmentShaderId);
+		glDeleteShader(fragmentShaderId);
+		fragmentShaderId = 0;
 
 	}
 
 	
-	if(ShaderProgramId)
+	if(programId)
 	{
 
-		glDeleteShader(ShaderProgramId);
-		ShaderProgramId = 0;
+		glDeleteShader(programId);
+		programId = 0;
 
 	}
 

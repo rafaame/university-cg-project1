@@ -1,68 +1,52 @@
-#ifndef Camera_H
-#define Camera_H
+#ifndef CAMERA_H
+#define CAMERA_H
 
-#define PI 3.14159265358979323846264338327950288		
-#define GLM_FORCE_RADIANS								
-
-#include <fstream>
-#include <glm/glm.hpp>									
-#include <glm/gtc/matrix_transform.hpp>					
-#include <glm/gtx/transform2.hpp>						
+#include "common.h"
+			
+using namespace std;			
 using namespace glm;
-
 
 class Camera 
 {
+
 public:
 
 	Camera();
-		
-	mat4 SetPerspective(float fov, float aspectRatio, float nearPlane, float farPlane);
-		
-	mat4 GetRotationMatrix();
-		
-	mat4 GetProjectionMatrix() { return ProjectionMatrix; }
-		
-	mat4 GetViewMatrix();
-		
-	void SetPosition(vec3 position)	{ Position = position; }
-	vec3 GetPosition()	{ return Position; }
-		
-	vec3 GetView();
-		
-	vec3 GetUp();
+	~Camera();
 
+	vec3 getPosition()	{ return position; }
+	double getSpeed() { return speed; }
+	float getPitch() { return pitch; }
+	float getYaw() { return yaw; }
+	double getRotationSpeed() { return rotationSpeed; }
+	mat4 getProjectionMatrix() { return projectionMatrix; }
 	
-	float GetYaw() { return Yaw; }
-	void SetYaw(float yaw)	{ Yaw = yaw; }
-	float GetPitch() { return Pitch; }
-	void SetPitch(float pitch) { Pitch = pitch; }
-		
-	void SetSpeed(double speed) { Speed = speed;  }
-	double GetSpeed() { return Speed; }
-
+	mat4 getRotationMatrix();
+	mat4 getViewMatrix();
+	vec3 getView();
+	vec3 getUp();
 	
-	void SetRotationSpeed(double speed) { RotationSpeed = speed; }
-	double GetRotationSpeed() { return RotationSpeed; }
-
-	void SetViewByMouse(float mouseX, float mouseY);
-			
-	void PositionCamera(float positionX, float positionY, float positionZ, float yaw, float pitch);
-
-	void MoveCamera(float speed);
+	void setPosition(vec3 position)	{ this->position = position; }
+	void setYaw(float yaw)	{ this->yaw = yaw; }
+	void setPitch(float pitch) { this->pitch = pitch; }
+	void setSpeed(double speed) { this->speed = speed;  }
+	mat4 setPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
+	void setRotationSpeed(double rotationSpeed) { this->rotationSpeed = rotationSpeed; }
+	void setViewByMouse(float mouseX, float mouseY);
+	void positionCamera(float x, float y, float z, float yaw, float pitch);
+	void move(float speed);
 
 protected:
 
-	mat4 ProjectionMatrix;								
-	vec3 Position;										
+	mat4 projectionMatrix;
+	vec3 position;
 
-	float Speed = 5.0;									
-	float RotationSpeed = 2;							
-	
-	double MouseSpeed = 0.001;							
-	
-	float Yaw = 0;										
-	float Pitch = 0;									
+	float speed;
+	float rotationSpeed;
+	double mouseSpeed;
+	float yaw;
+	float pitch;
+
 };
 
 

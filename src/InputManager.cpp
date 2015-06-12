@@ -1,12 +1,23 @@
 #include "InputManager.h"
 #include "TimeManager.h"
+#include "Camera.h"
 
-void InputManager::KeyPressed(InputCodes code)
+InputManager::InputManager(Camera *camera)
 {
-	
-	if(Camera == nullptr)
-		return;
 
+	this->camera = camera;
+
+}
+
+InputManager::~InputManager()
+{
+
+
+
+}
+
+void InputManager::keyPressed(InputCode_t code)
+{
 	
 	switch(code)
 	{
@@ -15,7 +26,7 @@ void InputManager::KeyPressed(InputCodes code)
 		case W:
 		case w:
 
-			Camera->MoveCamera(Camera->GetSpeed() * TimeManager::Instance().DeltaTime);
+			camera->move(camera->getSpeed() * TimeManager::instance()->getDelta());
 
 			break;
 		
@@ -23,7 +34,7 @@ void InputManager::KeyPressed(InputCodes code)
 		case S:
 		case s:
 
-			Camera->MoveCamera(-1 * Camera->GetSpeed() * TimeManager::Instance().DeltaTime);
+			camera->move(-1 * camera->getSpeed() * TimeManager::instance()->getDelta());
 
 			break;		
 
@@ -31,12 +42,9 @@ void InputManager::KeyPressed(InputCodes code)
 
 }
 
-void InputManager::MouseMoved(float mouseX, float mouseY)
+void InputManager::mouseMoved(float mouseX, float mouseY)
 {
 	
-	if(Camera == nullptr)
-		return;
-	
-	Camera->SetViewByMouse(mouseX, mouseY);
+	camera->setViewByMouse(mouseX, mouseY);
 
 }

@@ -1,53 +1,31 @@
-#ifndef _WindowManager_H
-#define _WindowManager_H
+#ifndef WINDOWMANAGER_H
+#define WINDOWMANAGER_H
 
-#include <string>										
-#include <fstream>										
-#include "InputManager.h"								
+#include "common.h"
 
+using namespace std;
 
-
+class InputManager;
 
 class WindowManager
 {
+
 public:
 
-	
-	virtual ~WindowManager() {}
+	WindowManager(InputManager *inputManager);
+	~WindowManager();
 
-	
-	virtual int Initialize(int width, int height, std::string strTitle, bool bFullScreen = false) = 0;
+	bool init(int width, int height, std::string title, bool fullscreen = false);
+	void swapBuffers();
+	bool processInput(bool continueGame);
 
-	
-	virtual void SwapTheBuffers() = 0;
+	InputManager *getInputManager() { return inputManager; }
 
-	
-	virtual bool ProcessInput(bool continueGame) = 0;
+private:
 
-	
-	virtual void Destroy() = 0;
+	GLFWwindow* window;
+	InputManager *inputManager;
 
-	
-	virtual InputManager *GetInputManager() { return &InputManager; }
-
-protected:
-
-	
-	InputManager InputManager;
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
