@@ -1,21 +1,28 @@
+//Rafael Andreatta Martins #USP 7564019
+//Rafael Silva de Milha #USP 8139701
+
 #include "Camera.h"
+#include "Player.h"
 #include "InputManager.h"
 #include "WindowManager.h"
 #include "Application.h"
+
+Application *gApplication = NULL;
 
 int main()
 {
 
 	Camera *camera = new Camera();
-	InputManager *inputManager = new InputManager(camera);
+	Player *player = new Player(camera);
+	InputManager *inputManager = new InputManager(camera, player);
 	WindowManager *windowManager = new WindowManager(inputManager);
 
-	Application *application = new Application(windowManager, camera);
+	gApplication = new Application(windowManager, camera, player);
 
-	if(!application->init())
+	if(!gApplication->init())
 		return -1;
 
-	application->run();
+	gApplication->run();
 
 	return 0;
 

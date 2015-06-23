@@ -7,9 +7,9 @@ Camera::Camera()
 {
 	
 	position = vec3(0.0, 0.0, 0.0);
-	speed = 5.0;									
+	speed = 1;									
 	rotationSpeed = 2;							
-	mouseSpeed = 0.001;							
+	mouseSpeed = 0.001;
 	yaw = 0;										
 	pitch = 0;
 

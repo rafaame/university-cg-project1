@@ -20,6 +20,12 @@
 #include <glm/glm.hpp>									
 #include <glm/gtc/matrix_transform.hpp>					
 #include <glm/gtx/transform2.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+#define NDEBUG
+#define PX_DEBUG
+#define PX_SUPPORT_VISUAL_DEBUGGER
+#include "PxPhysicsAPI.h"
 
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII

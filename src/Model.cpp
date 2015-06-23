@@ -9,6 +9,8 @@ Model::Model()
 {
 
 	scale = vec3(1.0, 1.0, 1.0);
+	position = vec3(0, 0, 0);
+	rotation = quat(1, 0, 0, 0);
 	shader = new Shader();
 
 }
@@ -59,7 +61,7 @@ bool Model::init(string vertexShaderFilename, string fragmentShaderFilename, str
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(vec2), &uvs[0], GL_STATIC_DRAW);
 		
 	GLenum error = glGetError();
-	if(error != GL_NO_ERROR)
+	if(error == GL_FALSE)
 	{
 
 		cout << "Could not create a VAO and VBO (errorId: " << error << ")" << endl;
@@ -134,6 +136,8 @@ bool Model::loadFromObj(string filename, string vertexShaderFilename, string fra
 		}
 
 	}
+
+	fclose(file);
 
 	// For each vertex of each triangle
 	for( unsigned int i=0; i<vertexIndices.size(); i++ ){
@@ -258,12 +262,13 @@ void Model::render()
 
 	mat4 projectionMatrix = camera->getProjectionMatrix();
 	mat4 viewMatrix = camera->getViewMatrix();
-	mat4 modelMatrix = translate(mat4(1.0), position);
+	mat4 modelMatrix = translate(mat4(), position) * mat4_cast(rotation) * glm::scale(mat4(), scale);
 
-	modelMatrix = glm::scale(modelMatrix, scale);
-	modelMatrix = rotate(modelMatrix, rotation.x, vec3(1, 0, 0));	
-	modelMatrix = rotate(modelMatrix, rotation.y, vec3(0, 1, 0));	
-	modelMatrix = rotate(modelMatrix, rotation.z, vec3(0, 0, 1));	
+	//modelMatrix =  modelMatrix * toMat4(rotation);
+	//modelMatrix = glm::scale(modelMatrix, scale);
+	//modelMatrix = rotate(modelMatrix, rotation.x, vec3(1, 0, 0));	
+	//modelMatrix = rotate(modelMatrix, rotation.y, vec3(0, 1, 0));	
+	//modelMatrix = rotate(modelMatrix, rotation.z, vec3(0, 0, 1));	
 
 	GLint modelMatrixId = shader->getUniformLocation("modelMatrix");
 	GLint viewMatrixId = shader->getUniformLocation("viewMatrix");

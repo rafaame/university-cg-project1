@@ -14,7 +14,7 @@ public:
 	~Shader();
 
 	string readFromFile(string filename);
-	GLuint createShader(GLenum type, string code);
+	void compileShader(GLuint shaderId, GLenum type, string code);
 	bool init(string vertexShaderFilename, string fragmentShaderFilename );
 
 	GLint getUniformLocation(string name);

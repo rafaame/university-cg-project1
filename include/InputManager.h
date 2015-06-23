@@ -5,7 +5,8 @@
 
 using namespace glm;	
 
-class Camera;								
+class Camera;
+class Player;						
 
 enum InputCode_t
 {
@@ -49,10 +50,11 @@ class InputManager
 {
 public:
 	
-	InputManager(Camera *camera);
+	InputManager(Camera *camera, Player *player);
 	~InputManager();
 	
 	Camera *getCamera() { return camera; }
+	Player *getPlayer() { return player; }
 
 	void keyPressed(InputCode_t code);
 	void mouseMoved(float mouseX, float mouseY);
@@ -60,6 +62,7 @@ public:
 protected:
 
 	Camera *camera;
+	Player *player;
 
 };
 

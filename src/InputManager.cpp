@@ -1,11 +1,13 @@
 #include "InputManager.h"
 #include "TimeManager.h"
 #include "Camera.h"
+#include "Player.h"
 
-InputManager::InputManager(Camera *camera)
+InputManager::InputManager(Camera *camera, Player *player)
 {
 
 	this->camera = camera;
+	this->player = player;
 
 }
 
@@ -26,7 +28,8 @@ void InputManager::keyPressed(InputCode_t code)
 		case W:
 		case w:
 
-			camera->move(camera->getSpeed() * TimeManager::instance()->getDelta());
+			//camera->move(camera->getSpeed() * TimeManager::instance()->getDelta());
+			player->move(camera->getSpeed());
 
 			break;
 		
@@ -34,7 +37,14 @@ void InputManager::keyPressed(InputCode_t code)
 		case S:
 		case s:
 
-			camera->move(-1 * camera->getSpeed() * TimeManager::instance()->getDelta());
+			//camera->move(-1 * camera->getSpeed() * TimeManager::instance()->getDelta());
+			player->move(-camera->getSpeed());
+
+			break;
+
+		case Space:
+
+			player->jump();
 
 			break;		
 

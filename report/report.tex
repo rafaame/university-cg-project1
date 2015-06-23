@@ -1,0 +1,45 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[margin=1.0in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{fancyhdr}
+\usepackage{indentfirst}
+\pagestyle{fancy}
+
+\setlength{\headheight}{71.0pt}
+\lhead
+{
+	Rafael Andreatta Martins (#USP 7564019)\\
+	Rafael Silva de Milha (#USP 8139701)\\
+  ICMC - USP - São Carlos - SP
+}
+\rhead{}
+
+\begin{document}
+
+\begin{center}
+{\Large Projeto de Computação Gráfica (SCC-250)}
+\end{center}
+
+\vspace{.5cm}
+
+\section{Controles}
+
+É possível movimentar o personagem utilizando as setas do teclado ou as teclas W, S, A e D. O personagem também pode pular utilizando a barra de espaço.
+
+\section{Compilando no Mac OS X}
+
+Bibliotecas utilizadas (encontradas no diretório /vendor do projeto):
+
+\begin{itemize}
+  \item GLEW 1.11.0;
+  \item GLFW 3.0.4;
+  \item GLM 0.9.5.2 (não utilizada para linking);
+  \item NVIDIA PhysX 3.3.2.
+\end{itemize}
+\vspace{.5cm}
+
+Para facilitar a compilação um Makefile é disponibilizado no diretório raiz do projeto. Para compilar e rodar o projeto basta "make" ou "make run" no diretório raiz do projeto.
+
+\end{document}

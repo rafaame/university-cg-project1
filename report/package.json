@@ -1,0 +1,11 @@
+{
+  "author": "Rafael Andreatta",
+  "name": "web-leica-proposal",
+  "version": "0.0.1",
+  "dependencies": {
+    "grunt-shell": "^1.1.2",
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-latex": "~1.0.0"
+  }
+}

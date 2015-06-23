@@ -41,8 +41,6 @@ double TimeManager::getFrameRate(bool writeToConsole)
 
 }
 
-
-
 double TimeManager::getTime()
 {
 

@@ -31,3 +31,4 @@ sftp-config.json
 # Komodo
 *.komodoproject
 .komodotools
+report/node_modules

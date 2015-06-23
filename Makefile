@@ -14,10 +14,10 @@ else
     
 	SRCDIR = src
 	OBJDIR = obj
-	INCDIR = -Isrc -Iinclude -Ivendor/glfw-3.0.4/include -I/usr/local/Cellar/glew/1.11.0/include -Ivendor/glm
-	LIBDIR = -Lvendor/glfw-3.0.4/src -L/usr/local/Cellar/glew/1.11.0/lib
+	INCDIR = -Isrc -Iinclude -Ivendor/glfw-3.0.4/include -I/usr/local/Cellar/glew/1.11.0/include -Ivendor/glm -Ivendor/physx/include
+	LIBDIR = -Lvendor/glfw-3.0.4/src -L/usr/local/Cellar/glew/1.11.0/lib -Lvendor/physx/lib/osx64
 	CPPFLAGS = -g -Wall $(INCDIR) -DGLFW_STATIC
-	LFLAGS = -framework IOKit -framework Cocoa -framework OpenGL -framework QuartzCore -lglfw3 -lGLEW
+	LFLAGS = -framework IOKit -framework Cocoa -framework OpenGL -framework QuartzCore -lglfw3 -lGLEW -lPhysX3CommonDEBUG -lPhysX3DEBUG -lPhysX3CookingDEBUG -lPhysX3ExtensionsDEBUG -lPhysXProfileSDKDEBUG -lPhysX3VehicleDEBUG -lPhysx3CharacterKinematicDEBUG -lPvdRuntimeDEBUG -lSimulationControllerDEBUG -lLowLevelClothDEBUG -lSceneQueryDEBUG -lLowLevelDEBUG -lPxTaskDEBUG -lPhysXVisualDebuggerSDKDEBUG
 	CC = g++
 
 endif

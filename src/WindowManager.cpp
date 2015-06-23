@@ -99,6 +99,9 @@ bool WindowManager::processInput(bool continueGame = true)
 	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
 		inputManager->keyPressed(Right);
 
+	if(glfwGetKey(window, GLFW_KEY_SPACE))
+		inputManager->keyPressed(Space);
+
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 
