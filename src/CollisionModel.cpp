@@ -23,24 +23,34 @@ CollisionModel::~CollisionModel()
 
 }
 
-void CollisionModel::init(vec3 position, CollisionShape_t shape)
+void CollisionModel::init(CollisionShape_t shape, vec3 dimensions, vec3 position, quat rotation, vec3 positionDisplacement, vec3 rotationDisplacement)
 {
 
-	PxTransform transform(PxVec3(position.x, position.y, position.z));
+	this->positionDisplacement = positionDisplacement;
+	this->rotationDisplacement = rotationDisplacement;
+
+	position += positionDisplacement;
+	rotation = rotate(rotation, radians(rotationDisplacement.x), vec3(1, 0, 0));
+	rotation = rotate(rotation, radians(rotationDisplacement.y), vec3(0, 1, 0));
+	rotation = rotate(rotation, radians(rotationDisplacement.z), vec3(0, 0, 1));
+
+	PxTransform transform(PxVec3(position.x, position.y, position.z), PxQuat(rotation.x, rotation.y, rotation.z, rotation.w));
 	PxGeometry *geometry = NULL;
 
 	switch(shape)
 	{
 
-		COLLISION_SHAPE_BOX:
+		case COLLISION_SHAPE_BOX:
 
-			geometry = new PxBoxGeometry(1, 1, 1);
+			geometry = new PxBoxGeometry(dimensions.x, dimensions.y, dimensions.z);
 
 			break;
 
-		COLLISION_SHAPE_CAPSULE:
+		case COLLISION_SHAPE_CAPSULE:
 
-			geometry = new PxCapsuleGeometry(1, 1);
+			geometry = new PxCapsuleGeometry(dimensions.x, dimensions.y);
+
+			break;
 
 	}
 
@@ -49,13 +59,13 @@ void CollisionModel::init(vec3 position, CollisionShape_t shape)
 
 		case COLLISION_MODEL_STATIC:
 
-			rigidBody = (PxRigidBody *) gApplication->getPhysicsManager()->createRigidStatic(transform, PxBoxGeometry(1, 1, 1));
+			rigidBody = (PxRigidBody *) Application::instance()->getPhysicsManager()->createRigidStatic(transform, *geometry);
 
 			break;
 
 		case COLLISION_MODEL_DYNAMIC:
 
-			rigidBody = (PxRigidBody *) gApplication->getPhysicsManager()->createRigidDynamic(transform, PxBoxGeometry(1, 1, 1));
+			rigidBody = (PxRigidBody *) Application::instance()->getPhysicsManager()->createRigidDynamic(transform, *geometry);
 
 			break;
 
@@ -63,7 +73,7 @@ void CollisionModel::init(vec3 position, CollisionShape_t shape)
 
 }
 
-void CollisionModel::initFromModel(Model *model)
+/*void CollisionModel::initFromModel(Model *model)
 {
 
 	vec3 position = model->getPosition();
@@ -105,19 +115,19 @@ void CollisionModel::initFromModel(Model *model)
 
 		case COLLISION_MODEL_STATIC:
 
-			rigidBody = (PxRigidBody *) gApplication->getPhysicsManager()->createRigidStatic(transform, vertices);
+			rigidBody = (PxRigidBody *) Application::instance()->getPhysicsManager()->createRigidStatic(transform, vertices);
 
 			break;
 
 		case COLLISION_MODEL_DYNAMIC:
 
-			rigidBody = (PxRigidBody *) gApplication->getPhysicsManager()->createRigidDynamic(transform, vertices);
+			rigidBody = (PxRigidBody *) Application::instance()->getPhysicsManager()->createRigidDynamic(transform, vertices);
 
 			break;
 
 	}
 
-}
+}*/
 
 vec3 CollisionModel::getPosition()
 {
@@ -125,7 +135,7 @@ vec3 CollisionModel::getPosition()
 	PxTransform globalPose = rigidBody->getGlobalPose();
 	PxVec3 position = globalPose.p;
 
-	return vec3(position.x, position.y, position.z);
+	return vec3(position.x, position.y, position.z) - positionDisplacement;
 
 }
 
@@ -133,13 +143,17 @@ quat CollisionModel::getRotation()
 {
 
 	PxTransform globalPose = rigidBody->getGlobalPose();
-	PxQuat rotation = globalPose.q;
+	quat rotation = quat(globalPose.q.w, globalPose.q.x, globalPose.q.y, globalPose.q.z);
+
+	rotation = rotate(rotation, radians(-rotationDisplacement.x), vec3(1, 0, 0));
+	rotation = rotate(rotation, radians(-rotationDisplacement.y), vec3(0, 1, 0));
+	rotation = rotate(rotation, radians(-rotationDisplacement.z), vec3(0, 0, 1));
 
 	//vec3 euler = eulerAngles(quat(rotation.w, rotation.x, rotation.y, rotation.z));
 
 	//return vec3(euler.x / PI * 180.0f, euler.y / PI * 180.0f, euler.z / PI * 180.0f);
 	//
-	
+
 	return quat(rotation.w, rotation.x, rotation.y, rotation.z);
 
 }

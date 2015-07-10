@@ -18,11 +18,12 @@ public:
 	bool init();
 	void simulate();
 
+	PxConvexMesh *createConvexMesh(vector<vec3> vertices);
 	PxRigidStatic *createRigidStatic(PxTransform &transform, vector<vec3> vertices);
 	PxRigidDynamic *createRigidDynamic(PxTransform &transform, vector<vec3> vertices);
-	PxRigidStatic *createRigidStatic(PxTransform &transform, PxGeometry geometry);
-	PxRigidDynamic *createRigidDynamic(PxTransform &transform, PxGeometry geometry);
-	PxConvexMesh *createConvexMesh(vector<vec3> vertices);
+	PxRigidStatic *createRigidStatic(PxTransform &transform, PxGeometry &geometry);
+	PxRigidDynamic *createRigidDynamic(PxTransform &transform, PxGeometry &geometry);
+	PxCloth *createCloth(uint16_t dimension, vec3 position, quat rotation, PxClothMeshDesc &meshDesc);
 
 	PxCapsuleController *createCapsuleController(vec3 position);
 

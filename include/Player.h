@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "common.h"	
+#include "common.h"
 
 using namespace std;
 using namespace glm;
@@ -10,25 +10,29 @@ using namespace physx;
 class Camera;
 class Application;
 
+struct SpotLight;
+
 class Player
 {
 
 public:
-	
-	Player(Camera *camera);
+
+	Player();
 	~Player();
 
 	void spawn(vec3 position);
 
 	vec3 getPosition();
+	Camera *getCamera() { return camera; }
 
 	void setPosition(vec3 position);
 
-	void move(double speed);
+	void move(vec3 direction, float speed);
 	void jump();
+	void toggleFlashlight();
 
 	void simulate();
-	
+
 protected:
 
 	vec3 dispVector;
@@ -36,20 +40,8 @@ protected:
 
 	PxCapsuleController *capsuleController;
 	Camera *camera;
+	SpotLight *flashlight;
 
 };
 
-extern Application *gApplication;
-
 #endif
-
-
-
-
-
-
-
-
-
-
-

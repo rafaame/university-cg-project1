@@ -7,28 +7,19 @@
 #include "WindowManager.h"
 #include "Application.h"
 
-Application *gApplication = NULL;
+using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
 
-	Camera *camera = new Camera();
-	Player *player = new Player(camera);
-	InputManager *inputManager = new InputManager(camera, player);
-	WindowManager *windowManager = new WindowManager(inputManager);
+	Magick::InitializeMagick(*argv);
+	Application *application = Application::instance();
 
-	gApplication = new Application(windowManager, camera, player);
+	if(!application->init())
+		return 1;
 
-	if(!gApplication->init())
-		return -1;
-
-	gApplication->run();
+	application->run();
 
 	return 0;
 
-}
-
-static void error_callback(int error, const char* description)
-{
-    fputs(description, stderr);
 }

@@ -1,15 +1,14 @@
 #include "PhysicsObject.h"
 #include "Model.h"
 #include "CollisionModel.h"
-#include "Camera.h"
+#include "Shader.h"
 
-PhysicsObject::PhysicsObject(CollisionModel_t type, Camera *camera)
+PhysicsObject::PhysicsObject(CollisionModel_t type)
 {
 
 	this->type = type;
-	model = NULL;
-	collisionModel = NULL;
-	this->camera = camera;
+	model = new Model();;
+	collisionModel = new CollisionModel(type);
 
 }
 
@@ -21,21 +20,18 @@ PhysicsObject::~PhysicsObject()
 
 }
 
-bool PhysicsObject::loadFromObj(string filename, string vertexShaderFilename, string fragmentShaderFilename, string textureFilename)
+bool PhysicsObject::loadFromObj(string filename, string textureFilename, Shader *shader)
 {
 
-	model = new Model();
-	model->loadFromObj(filename, vertexShaderFilename, fragmentShaderFilename, textureFilename);
-	model->setCamera(camera);
+	return model->loadFromObj(filename, textureFilename, shader);
 
 }
 
-void PhysicsObject::initCollisionModel()
+void PhysicsObject::init(CollisionShape_t shape, vec3 dimensions, vec3 position, quat rotation, vec3 collisionModelPositionDisplacement, vec3 collisionModelRotationDisplacement)
 {
 
-	collisionModel = new CollisionModel(type);
-	collisionModel->initFromModel(model);
-	
+	collisionModel->init(shape, dimensions, position, rotation, collisionModelPositionDisplacement, collisionModelRotationDisplacement);
+
 }
 
 vec3 PhysicsObject::getPosition()
@@ -71,9 +67,6 @@ void PhysicsObject::simulate()
 
 	vec3 collisionModelPosition = collisionModel->getPosition();
 	quat collisionModelRotation = collisionModel->getRotation();
-
-	//cout << "Rot: " << collisionModelRotation.x << " " << collisionModelRotation.y << " " << collisionModelRotation.z << endl;
-	//cout << "Pos: " << collisionModelPosition.x << " " << collisionModelPosition.y << " " << collisionModelPosition.z << endl;
 
 	model->setPosition(collisionModelPosition);
 	model->setRotation(collisionModelRotation);

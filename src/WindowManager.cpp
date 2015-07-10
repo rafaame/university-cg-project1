@@ -1,12 +1,15 @@
 #include "WindowManager.h"
+
 #include "InputManager.h"
+#include "Application.h"
 
 using namespace std;
+using namespace glm;
 
-WindowManager::WindowManager(InputManager *inputManager)
+WindowManager::WindowManager()
 {
 
-	this->inputManager = inputManager;
+
 
 }
 
@@ -17,7 +20,7 @@ WindowManager::~WindowManager()
 
 }
 
-bool WindowManager::init(int width, int height, std::string title, bool fullscreen)
+bool WindowManager::init(vec2 windowSize, string windowTitle, bool fullscreen)
 {
 
 	if (!glfwInit())
@@ -31,15 +34,15 @@ bool WindowManager::init(int width, int height, std::string title, bool fullscre
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	if(fullscreen)
-		window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+		window = glfwCreateWindow(windowSize.x, windowSize.y, windowTitle.c_str(), glfwGetPrimaryMonitor(), nullptr);
 	else
-		window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+		window = glfwCreateWindow(windowSize.x, windowSize.y, windowTitle.c_str(), nullptr, nullptr);
 
 	if(!window)
 	{
@@ -52,12 +55,12 @@ bool WindowManager::init(int width, int height, std::string title, bool fullscre
 
 	glfwMakeContextCurrent(window);
 
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, true);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPos(window, 0, 0);
 	glfwSwapInterval(0);
 
-	glewExperimental = GL_TRUE;
+	glewExperimental = true;
 
 	GLenum err = glewInit();
 
@@ -69,6 +72,8 @@ bool WindowManager::init(int width, int height, std::string title, bool fullscre
 		return false;
 
 	}
+
+	glGetError();
 
 	return true;
 
@@ -84,34 +89,59 @@ void WindowManager::swapBuffers()
 bool WindowManager::processInput(bool continueGame = true)
 {
 
+	InputManager *inputManager = Application::instance()->getInputManager();
+
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwWindowShouldClose(window) != 0)
 		return false;
 
-	if(glfwGetKey(window, GLFW_KEY_UP) || glfwGetKey(window, GLFW_KEY_W))
-		inputManager->keyPressed(Up);
+	static bool keyState[256] = {false};
 
-	if(glfwGetKey(window, GLFW_KEY_DOWN) || glfwGetKey(window, GLFW_KEY_S))
-		inputManager->keyPressed(Down);
+	for(uint8_t key = 1; key < 255; key++)
+		if(glfwGetKey(window, key))
+		{
 
-	if(glfwGetKey(window, GLFW_KEY_LEFT) || glfwGetKey(window, GLFW_KEY_A))
-		inputManager->keyPressed(Left);
+			inputManager->keyPressed((InputCode_t ) key);
 
-	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		inputManager->keyPressed(Right);
+			if(!keyState[key])
+			{
 
-	if(glfwGetKey(window, GLFW_KEY_SPACE))
-		inputManager->keyPressed(Space);
+				inputManager->keyPressedOnce((InputCode_t) key);
+
+				keyState[key] = true;
+
+			}
+
+		}
+		else
+		{
+
+			if(keyState[key])
+				keyState[key] = false;
+
+		}
 
 	double mouseX, mouseY;
 	glfwGetCursorPos(window, &mouseX, &mouseY);
 
 	if(mouseX != 0 && mouseY != 0)
-		inputManager->mouseMoved((float) mouseX, (float) mouseY);
+		inputManager->mouseMoved(vec2(mouseX, mouseY));
 
 	glfwSetCursorPos(window, 0, 0);
 
 	glfwPollEvents();
 
 	return continueGame;
+
+}
+
+vec2 WindowManager::getWindowSize()
+{
+
+	int width;
+	int height;
+
+	glfwGetWindowSize(window, &width, &height);
+
+	return vec2(width, height);
 
 }

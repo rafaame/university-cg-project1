@@ -1,7 +1,7 @@
 ##### Variables
 
 ifeq ($(OS),Windows_NT)
-    
+
 	SRCDIR = src
 	OBJDIR = obj
 	INCDIR = -Isrc -Iinclude -Ivendor/glfw-3.0.4/include -Ivendor/glew-1.10.0/include -Ivendor/glm
@@ -11,13 +11,13 @@ ifeq ($(OS),Windows_NT)
 	CC = g++ -mwin32
 
 else
-    
+
 	SRCDIR = src
 	OBJDIR = obj
-	INCDIR = -Isrc -Iinclude -Ivendor/glfw-3.0.4/include -I/usr/local/Cellar/glew/1.11.0/include -Ivendor/glm -Ivendor/physx/include
-	LIBDIR = -Lvendor/glfw-3.0.4/src -L/usr/local/Cellar/glew/1.11.0/lib -Lvendor/physx/lib/osx64
-	CPPFLAGS = -g -Wall $(INCDIR) -DGLFW_STATIC
-	LFLAGS = -framework IOKit -framework Cocoa -framework OpenGL -framework QuartzCore -lglfw3 -lGLEW -lPhysX3CommonDEBUG -lPhysX3DEBUG -lPhysX3CookingDEBUG -lPhysX3ExtensionsDEBUG -lPhysXProfileSDKDEBUG -lPhysX3VehicleDEBUG -lPhysx3CharacterKinematicDEBUG -lPvdRuntimeDEBUG -lSimulationControllerDEBUG -lLowLevelClothDEBUG -lSceneQueryDEBUG -lLowLevelDEBUG -lPxTaskDEBUG -lPhysXVisualDebuggerSDKDEBUG
+	INCDIR = -Isrc -Iinclude -Ivendor/glfw-3.1.1/include -Ivendor/glew-1.12.0/include -Ivendor/glm -Ivendor/ImageMagick-6.9.1/include/ImageMagick-6 -Ivendor/assimp-3.1.1/include -Ivendor/physx/include
+	LIBDIR = -Lvendor/glfw-3.1.1/lib -Lvendor/glew-1.12.0/lib -Lvendor/ImageMagick-6.9.1/lib -Lvendor/assimp-3.1.1/lib -Lvendor/physx/lib/osx64
+	CPPFLAGS = -g -std=c++11 -Wall $(INCDIR) -DGLFW_STATIC
+	LFLAGS = -framework IOKit -framework Cocoa -framework OpenGL -framework QuartzCore -lglfw3 -lGLEW.1.12.0 -lMagick++-6.Q16.6 -lassimp.3.1.1 -lPhysX3CommonDEBUG -lPhysX3DEBUG -lPhysX3CookingDEBUG -lPhysX3ExtensionsDEBUG -lPhysXProfileSDKDEBUG -lPhysX3VehicleDEBUG -lPhysx3CharacterKinematicDEBUG -lPvdRuntimeDEBUG -lSimulationControllerDEBUG -lLowLevelClothDEBUG -lSceneQueryDEBUG -lLowLevelDEBUG -lPxTaskDEBUG -lPhysXVisualDebuggerSDKDEBUG
 	CC = g++
 
 endif
@@ -47,7 +47,7 @@ depend:
 
 clean:
 	@rm -rf $(TARGET) $(TARGET).exe $(OBJDIR)/*.o *.bak *~ *%
-	
+
 memtest:
 	valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./main
 

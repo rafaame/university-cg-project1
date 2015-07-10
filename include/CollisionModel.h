@@ -29,12 +29,12 @@ class CollisionModel
 {
 
 public:
-	
+
 	CollisionModel(CollisionModel_t type);
 	~CollisionModel();
 
-	void init(vec3 position, CollisionShape_t shape);
-	void initFromModel(Model *model);
+	void init(CollisionShape_t shape, vec3 dimensions, vec3 position, quat rotation, vec3 positionDisplacement, vec3 rotationDisplacement);
+	//void initFromModel(Model *model);
 
 	vec3 getPosition();
 	quat getRotation();
@@ -42,11 +42,14 @@ public:
 
 	void setPosition(vec3 position);
 	void setRotation(quat rotation);
-	
+
 protected:
 
 	CollisionModel_t type;
 	PxRigidBody *rigidBody;
+
+	vec3 positionDisplacement;
+	vec3 rotationDisplacement;
 
 };
 

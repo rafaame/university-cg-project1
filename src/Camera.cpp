@@ -5,12 +5,12 @@ using namespace glm;
 
 Camera::Camera()
 {
-	
+
 	position = vec3(0.0, 0.0, 0.0);
-	speed = 1;									
-	rotationSpeed = 2;							
+	speed = 1;
+	rotationSpeed = 2;
 	mouseSpeed = 0.001;
-	yaw = 0;										
+	yaw = 0;
 	pitch = 0;
 
 }
@@ -28,16 +28,6 @@ mat4 Camera::setPerspective(float fieldOfView, float aspectRatio, float nearPlan
 	projectionMatrix = perspective(fieldOfView, aspectRatio, nearPlane, farPlane);
 
 	return projectionMatrix;
-	
-}
-
-void Camera::positionCamera(float x, float y, float z, float yaw, float pitch)
-{
-
-	position = vec3(x, y, z);
-
-	this->yaw = yaw;
-	this->pitch = pitch;
 
 }
 
@@ -83,16 +73,16 @@ void Camera::move(float speed)
 
 	vec3 viewVector = getView();
 
-	position.x += viewVector.x * speed;		
+	position.x += viewVector.x * speed;
 	position.z += viewVector.z * speed;
 
 }
 
-void Camera::setViewByMouse(float xOffset, float yOffset)
+void Camera::setViewByMouse(vec2 mousePosition)
 {
 
-	yaw += xOffset * mouseSpeed;
-	pitch += yOffset * mouseSpeed;
+	yaw += mousePosition.x * mouseSpeed;
+	pitch += mousePosition.y * mouseSpeed;
 
 	if(yaw > 2 * PI)
 		yaw = 0;

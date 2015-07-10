@@ -6,28 +6,30 @@
 using namespace std;
 
 class WindowManager;
+class RenderingManager;
+class InputManager;
 class PhysicsManager;
-class Camera;
-class Player;
-class Model;
-class PhysicsObject;
+
+class Scene;
 
 class Application
 {
-	
+
 public:
 
-	static const int screenWidth = 1024;
-	static const int screenHeight = 768;
+	static Application* instance()
+	{
 
-	Application(WindowManager *windowManager, Camera *camera, Player *player);
-	~Application();
+		static Application instance;
+
+		return &instance;
+
+	}
 
 	WindowManager *getWindowManager() { return windowManager; }
+	RenderingManager *getRenderingManager() { return renderingManager; }
+	InputManager *getInputManager() { return inputManager; }
 	PhysicsManager *getPhysicsManager() { return physicsManager; }
-
-	Camera *getCamera() { return camera; }
-	Player *getPlayer() { return player; }
 
 	bool init();
 	void run();
@@ -35,15 +37,18 @@ public:
 protected:
 
 	WindowManager *windowManager;
+	RenderingManager *renderingManager;
+	InputManager *inputManager;
 	PhysicsManager *physicsManager;
 
-	Camera *camera;
-	Player *player;
-	vector<Model *> models;
-	vector<PhysicsObject *> physicsObjects;
+	Scene *scene;
+
+private:
+
+	Application();
+	Application(Application const&);
+	Application& operator= (Application const&);
 
 };
-
-extern Application *gApplication;
 
 #endif
